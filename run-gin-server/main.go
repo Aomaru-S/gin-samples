@@ -9,7 +9,7 @@ func setupRouter() *gin.Engine {
 	r := gin.Default()
 
 	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hello, World! This is gin-server.")
+		c.String(http.StatusOK, "Hello, World! This is gin server.")
 	})
 
 	return r
