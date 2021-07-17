@@ -15,7 +15,10 @@ func proxy(c *gin.Context, realUrl string) {
 	request.URL.Path = web.Path
 
 	transport := http.DefaultTransport
-	response, _ := transport.RoundTrip(request)
+	response, err := transport.RoundTrip(request)
+	if err != nil {
+		return
+	}
 
 	for k, vv := range response.Header {
 		for _, v := range vv {
@@ -23,14 +26,17 @@ func proxy(c *gin.Context, realUrl string) {
 		}
 	}
 
-	_, _ = bufio.NewReader(response.Body).WriteTo(c.Writer)
+	_, err = bufio.NewReader(response.Body).WriteTo(c.Writer)
+	if err != nil {
+		return
+	}
 }
 
 func setupProxy() *gin.Engine {
 	r := gin.Default()
 
 	r.NoRoute(func(c *gin.Context) {
-		proxy(c, "http://localhost:8081/test")
+		proxy(c, "http://localhost:8081/")
 	})
 
 	return r
