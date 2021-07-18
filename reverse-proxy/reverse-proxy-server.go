@@ -12,7 +12,7 @@ func proxy(c *gin.Context, realUrl string) {
 	web, _ := url.Parse(realUrl)
 	request.URL.Scheme = web.Scheme
 	request.URL.Host = web.Host
-	request.URL.Path = web.Path
+	request.URL.Path = c.Request.RequestURI
 
 	transport := http.DefaultTransport
 	response, err := transport.RoundTrip(request)
@@ -36,7 +36,7 @@ func setupProxy() *gin.Engine {
 	r := gin.Default()
 
 	r.NoRoute(func(c *gin.Context) {
-		proxy(c, "http://localhost:8081/")
+		proxy(c, "http://localhost:8081")
 	})
 
 	return r
